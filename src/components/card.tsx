@@ -110,7 +110,7 @@ export default function Card(props: { card: { id: string; content: string } }) {
       onDragStart={sourceDragStart}
       onDragEnd={handleDragEnd}
       className={
-        "flex rounded bg-neutral-800 drop-shadow p-2 min-w-96 min-h-32 " +
+        "flex rounded bg-neutral-800 drop-shadow p-2 min-h-32 " +
         (isDeleted ? "hidden" : "")
       }
     >
