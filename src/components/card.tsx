@@ -1,9 +1,34 @@
 import Icon from "@mdi/react";
 import { mdiDelete, mdiDragVertical } from "@mdi/js";
+import { MutableRefObject, useCallback, useRef } from "react";
+
+// Custom hooks
+
+function useDnDHandle(targetRef: MutableRefObject<Element | null>) {
+  const handleDragStart = useCallback(() => {
+    if (targetRef.current) {
+      targetRef.current.setAttribute("draggable", "true");
+    }
+  }, [targetRef]);
+
+  const handleDragEnd = useCallback(() => {
+    if (targetRef.current) {
+      targetRef.current.setAttribute("draggable", "false");
+    }
+  }, [targetRef]);
+
+  return [handleDragStart, handleDragEnd];
+}
 
 export default function Card() {
+  const cardRef = useRef(null);
+
+  const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
+
   return (
     <div
+      ref={cardRef}
+      onDragEnd={handleDragEnd}
       className={
         "flex rounded bg-neutral-800 drop-shadow p-2 min-w-96 min-h-32"
       }
@@ -22,7 +47,11 @@ export default function Card() {
         <div className={"flex flex-col justify-between shrink"}>
           {/*Drag*/}
           <div className={""}>
-            <button draggable={true} className={"hover:cursor-move"}>
+            <button
+              onMouseDown={handleDragStart}
+              onMouseUp={handleDragEnd}
+              className={"hover:cursor-move"}
+            >
               <Icon path={mdiDragVertical} title="Drag" size={1} />
             </button>
           </div>
