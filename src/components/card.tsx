@@ -34,11 +34,18 @@ function useDnDHandle(targetRef: MutableRefObject<Element | null>) {
   return [handleDragStart, handleDragEnd];
 }
 
+function useDeleteCard(cardId: string) {
+  return useCallback(async () => {
+    console.log("Call to API to remove card", cardId);
+  }, [cardId]);
+}
+
 export default function Card(props: { cardId: string }) {
   const cardRef = useRef(null);
 
   const sourceDragStart = useDnDSource(props.cardId, cardRef);
   const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
+  const handleDeleteCard = useDeleteCard(props.cardId);
 
   return (
     <div
@@ -73,7 +80,7 @@ export default function Card(props: { cardId: string }) {
           </div>
           {/*Delete*/}
           <div>
-            <button>
+            <button onClick={handleDeleteCard}>
               <Icon path={mdiDelete} title="Remove" size={1} />
             </button>
           </div>
