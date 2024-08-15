@@ -4,13 +4,13 @@ import Board from "./components/board";
 
 function App() {
   return (
-    <div>
+    <div className={"h-full flex flex-col justify-start"}>
       <header>
         <nav>
           <div>Mini-Kanban</div>
         </nav>
       </header>
-      <section>
+      <section className={"h-full"}>
         <Board />
       </section>
     </div>

@@ -2,7 +2,9 @@ import Column from "./column";
 
 export default function Board() {
   return (
-    <div>
+    <div
+      className={"h-full flex flex-row flex-nowrap justify-start space-x-4 p-2"}
+    >
       <Column />
       <Column />
       <Column />
