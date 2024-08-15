@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const BoardContext = createContext({});
+export const DnDTargetsContext = createContext([] as string[]);
