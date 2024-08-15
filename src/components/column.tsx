@@ -50,9 +50,9 @@ export default function Column(props: { columnId: string }) {
       <div className={"p-2 font-bold"}>{props.columnId}</div>
       {/*Cards*/}
       <div className={"flex flex-col justify-start space-y-2 px-2"}>
-        <Card cardId={props.columnId + "-1"} />
-        <Card cardId={props.columnId + "-2"} />
-        <Card cardId={props.columnId + "-3"} />
+        <Card card={{ id: props.columnId + "-1", content: "" }} />
+        <Card card={{ id: props.columnId + "-2", content: "" }} />
+        <Card card={{ id: props.columnId + "-3", content: "" }} />
       </div>
     </div>
   );

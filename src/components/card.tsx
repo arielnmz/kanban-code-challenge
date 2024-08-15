@@ -1,6 +1,13 @@
 import Icon from "@mdi/react";
 import { mdiDelete, mdiDragVertical } from "@mdi/js";
-import { MutableRefObject, useCallback, useRef } from "react";
+import {
+  Dispatch,
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 // Custom hooks
 
@@ -40,12 +47,59 @@ function useDeleteCard(cardId: string) {
   }, [cardId]);
 }
 
-export default function Card(props: { cardId: string }) {
+function useToggleableEditField(
+  textareaRef: MutableRefObject<HTMLTextAreaElement | null>,
+  card: {
+    id: string;
+    content: string;
+  },
+): [string, Dispatch<string>, boolean, () => void, () => void] {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [optimisticCardContent, setOptimisticCardContent] = useState(
+    card.content,
+  );
+
+  useEffect(() => {
+    if (isEditMode) {
+      textareaRef.current?.focus();
+    } else {
+      textareaRef.current?.blur();
+    }
+  }, [isEditMode]);
+
+  const editCard = useCallback(() => {
+    setIsEditMode(true);
+  }, []);
+
+  const saveCard = useCallback(() => {
+    const finalText = textareaRef.current?.value || "";
+    console.log("API call to update card", card, "new text", finalText);
+    setIsEditMode(false);
+  }, [textareaRef]);
+
+  return [
+    optimisticCardContent,
+    setOptimisticCardContent,
+    isEditMode,
+    editCard,
+    saveCard,
+  ];
+}
+
+export default function Card(props: { card: { id: string; content: string } }) {
   const cardRef = useRef(null);
 
-  const sourceDragStart = useDnDSource(props.cardId, cardRef);
+  const sourceDragStart = useDnDSource(props.card.id, cardRef);
   const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
-  const handleDeleteCard = useDeleteCard(props.cardId);
+  const handleDeleteCard = useDeleteCard(props.card.id);
+  const textareaRef = useRef(null);
+  const [
+    optimisticCardContent,
+    setOptimisticCardContent,
+    isEditMode,
+    editCard,
+    saveCard,
+  ] = useToggleableEditField(textareaRef, props.card);
 
   return (
     <div
@@ -60,10 +114,26 @@ export default function Card(props: { cardId: string }) {
         {/*Content*/}
         <div className={"flex grow"}>
           {/*Text area*/}
-          <div className={"grow"}>Card</div>
+          <div
+            onClick={editCard}
+            className={"grow " + (isEditMode ? "hidden" : "")}
+          >
+            {optimisticCardContent}
+          </div>
           {/*Edit area*/}
           <textarea
-            className={"grow rounded bg-neutral-700 drop-shadow"}
+            ref={textareaRef}
+            value={optimisticCardContent}
+            onChange={(e) => setOptimisticCardContent(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                saveCard();
+              }
+            }}
+            className={
+              "grow rounded bg-neutral-700 drop-shadow " +
+              (isEditMode ? "" : "hidden")
+            }
           ></textarea>
         </div>
         {/*Tools*/}
