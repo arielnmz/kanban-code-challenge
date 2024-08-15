@@ -1,16 +1,17 @@
 import Icon from "@mdi/react";
 import { mdiDelete, mdiDragVertical } from "@mdi/js";
-import { MutableRefObject, useCallback, useContext, useRef } from "react";
-import { DnDTargetsContext } from "../contexts";
+import { MutableRefObject, useCallback, useRef } from "react";
 
 // Custom hooks
 
-function useDnDSource(targetRef: MutableRefObject<Element | null>) {
+function useDnDSource(
+  cardId: string,
+  targetRef: MutableRefObject<Element | null>,
+) {
   return useCallback(
     (e: any) => {
       if (targetRef.current) {
-        const payload = JSON.stringify({ card: "1" });
-        (e as DragEvent).dataTransfer?.setData("text/json", payload);
+        (e as DragEvent).dataTransfer?.setData("text/plain", cardId);
       }
     },
     [targetRef],
@@ -33,11 +34,10 @@ function useDnDHandle(targetRef: MutableRefObject<Element | null>) {
   return [handleDragStart, handleDragEnd];
 }
 
-export default function Card() {
+export default function Card(props: { cardId: string }) {
   const cardRef = useRef(null);
-  const cols = useContext(DnDTargetsContext);
 
-  const sourceDragStart = useDnDSource(cardRef);
+  const sourceDragStart = useDnDSource(props.cardId, cardRef);
   const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
 
   return (
@@ -53,7 +53,7 @@ export default function Card() {
         {/*Content*/}
         <div className={"flex grow"}>
           {/*Text area*/}
-          <div className={"grow"}>Card (drop to {cols})</div>
+          <div className={"grow"}>Card</div>
           {/*Edit area*/}
           <textarea
             className={"grow rounded bg-neutral-700 drop-shadow"}

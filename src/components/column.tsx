@@ -3,11 +3,14 @@ import { useCallback } from "react";
 
 // Custom hooks
 
-function useDnDTarget() {
-  const handleDrop = useCallback((e: any) => {
+function useDnDTarget(
+  columnId: string,
+  updateCard: (cardId: string) => Promise<void>,
+) {
+  const handleDrop = useCallback(async (e: any) => {
     e.preventDefault();
-    const payload = e.dataTransfer.getData("text/json");
-    console.log("drop event", JSON.parse(payload));
+    const payload = e.dataTransfer.getData("text/plain");
+    await updateCard(payload);
     return false;
   }, []);
 
@@ -19,8 +22,21 @@ function useDnDTarget() {
   return [handleDrop, handleDragOver];
 }
 
+function useUpdateCard(columnId: string) {
+  return useCallback(
+    async (cardId: string) => {
+      console.log("Call API to move card", cardId, "to", columnId);
+    },
+    [columnId],
+  );
+}
+
 export default function Column(props: { columnId: string }) {
-  const [handleDrop, handleDragOver] = useDnDTarget();
+  const handleUpdateCard = useUpdateCard(props.columnId);
+  const [handleDrop, handleDragOver] = useDnDTarget(
+    props.columnId,
+    handleUpdateCard,
+  );
 
   return (
     <div
@@ -34,9 +50,9 @@ export default function Column(props: { columnId: string }) {
       <div className={"p-2 font-bold"}>{props.columnId}</div>
       {/*Cards*/}
       <div className={"flex flex-col justify-start space-y-2 px-2"}>
-        <Card />
-        <Card />
-        <Card />
+        <Card cardId={props.columnId + "-1"} />
+        <Card cardId={props.columnId + "-2"} />
+        <Card cardId={props.columnId + "-3"} />
       </div>
     </div>
   );
