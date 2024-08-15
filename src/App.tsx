@@ -7,7 +7,9 @@ function App() {
     <div className={"h-full flex flex-col justify-start"}>
       <header>
         <nav>
-          <div>Mini-Kanban</div>
+          <div className={"p-2 bg-neutral-800"}>
+            <span className={"font-bold"}>Mini-Kanban</span>
+          </div>
         </nav>
       </header>
       <section className={"h-full"}>

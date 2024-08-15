@@ -1,5 +1,5 @@
 html, body {
-    background: theme('colors.neutral.900');
+    background: theme('colors.neutral.800');
     color: theme('colors.neutral.300');
     font-family: sans-serif;
 }
