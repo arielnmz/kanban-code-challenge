@@ -41,10 +41,13 @@ function useDnDHandle(targetRef: MutableRefObject<Element | null>) {
   return [handleDragStart, handleDragEnd];
 }
 
-function useDeleteCard(cardId: string) {
-  return useCallback(async () => {
+function useOptimisticDeleteCard(cardId: string): [boolean, () => void] {
+  const [isDeleted, setIsDeleted] = useState(false);
+  const deleter = useCallback(async () => {
     console.log("Call to API to remove card", cardId);
+    setIsDeleted(true);
   }, [cardId]);
+  return [isDeleted, deleter];
 }
 
 function useToggleableEditField(
@@ -91,7 +94,7 @@ export default function Card(props: { card: { id: string; content: string } }) {
 
   const sourceDragStart = useDnDSource(props.card.id, cardRef);
   const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
-  const handleDeleteCard = useDeleteCard(props.card.id);
+  const [isDeleted, handleDeleteCard] = useOptimisticDeleteCard(props.card.id);
   const textareaRef = useRef(null);
   const [
     optimisticCardContent,
@@ -107,7 +110,8 @@ export default function Card(props: { card: { id: string; content: string } }) {
       onDragStart={sourceDragStart}
       onDragEnd={handleDragEnd}
       className={
-        "flex rounded bg-neutral-800 drop-shadow p-2 min-w-96 min-h-32"
+        "flex rounded bg-neutral-800 drop-shadow p-2 min-w-96 min-h-32 " +
+        (isDeleted ? "hidden" : "")
       }
     >
       <div className={"flex grow"}>
