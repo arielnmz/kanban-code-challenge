@@ -1,5 +1,7 @@
 from collections.abc import Iterable
+from botocore.exceptions import ClientError
 
+from mini_kanban_api.db import get_dynamodb_resource
 
 TMP_CARDS = [
     {"id": "1", "column": "column-1", "content": "test"},
@@ -12,10 +14,23 @@ TMP_CARDS = [
 
 def get_cards(columns: Iterable[str]):
     """Get cards by column name"""
-
-    for card in TMP_CARDS:
-        if card["column"] in columns:
-            yield card
+    dynamodb = get_dynamodb_resource()
+    table = dynamodb.Table('cards')
+    try:
+        response = table.scan()
+    except ClientError as err:
+        print(
+            "Couldn't query for movies released in %s. Here's why: %s: %s",
+            err.response["Error"]["Code"],
+            err.response["Error"]["Message"],
+        )
+        raise
+    else:
+        print(response)
+        all_cards = response['Items']
+        for card in all_cards:
+            if card["card"]["column"] in columns:
+                yield card["card"]
 
 
 def create_card(column: str, content: str):

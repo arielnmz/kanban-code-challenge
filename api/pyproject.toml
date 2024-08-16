@@ -10,6 +10,7 @@ python = "^3.11"
 graphene = "^3"
 fastapi = { extras = ["standard"], version = "^0.112.1" }
 starlette-graphene3 = "^0.6.0"
+boto3 = "^1.35.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.8.0"

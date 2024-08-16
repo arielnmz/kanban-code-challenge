@@ -1,5 +1,6 @@
 import graphene
 
+from mini_kanban_api import seed
 from mini_kanban_api.dal import get_cards, create_card, update_card, delete_card
 
 
@@ -68,10 +69,24 @@ class DeleteCard(graphene.Mutation):
         return DeleteCard(ok=True)  # noqa
 
 
+class SeedDB(graphene.Mutation):
+    class Arguments:
+        ...
+
+    ok = graphene.Boolean()
+
+    @staticmethod
+    def mutate(*_):
+        seed.create_table()
+        return SeedDB(ok=True)  # noqa
+
+
 class Mutations(graphene.ObjectType):
     create_card = CreateCard.Field()
     update_card = UpdateCard.Field()
     delete_card = DeleteCard.Field()
+    # Some DB actions
+    seed_db = SeedDB.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutations)

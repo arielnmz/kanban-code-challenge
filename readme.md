@@ -16,6 +16,22 @@ Step 1:
 - Delivery of Code on Github
 - Record and send short 10m Loom video to demo the UI/functionality, code overview (show browser network tab with graphql queries/mutations)
 
+
+## DynamoDB local findings
+
+> The Access Key ID or security token is invalid.
+
+Answer from: https://stackoverflow.com/a/76592596/2625090
+
+> Since the latest release there has been an enforcement on access keys which can be used:
+> DynamoDB local version 2.0.0 and greater AWS_ACCESS_KEY_ID can contain the only letters (A–Z, a–z) and numbers (0–9).
+
+That means even dummy credentials will fail if the key/token have weird characters.
+
+> WARNING: [sqlite] cannot open DB[2]: com.almworks.sqlite4java.SQLiteException: [14] unable to open database file
+
+Just use a named volume to guarantee it has permissions.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
