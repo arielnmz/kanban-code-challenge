@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "mini-kanban-api"
+version = "0.1.0"
+description = ""
+authors = ["Ben Nava <arielnmz@yandex.com>"]
+packages = [{ include = "*", from = "mini_kanban_api" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+graphene = "^3"
+fastapi = { extras = ["standard"], version = "^0.112.1" }
+starlette-graphene3 = "^0.6.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
