@@ -6,13 +6,16 @@ import { ColumnT } from "../typedefs";
 // Custom hooks
 
 function useDnDTarget(columnId: string) {
-  const [_, { updateCard }] = useContext(BoardState)!;
-  const handleDrop = useCallback(async (e: any) => {
-    e.preventDefault();
-    const payload = e.dataTransfer.getData("text/plain");
-    await updateCard({ id: payload, column: columnId, content: "" });
-    return false;
-  }, []);
+  const [, { updateCard }] = useContext(BoardState)!;
+  const handleDrop = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      const payload = e.dataTransfer.getData("text/plain");
+      await updateCard({ id: payload, column: columnId, content: "" });
+      return false;
+    },
+    [updateCard, columnId],
+  );
 
   const handleDragOver = useCallback((e: any) => {
     e.preventDefault();

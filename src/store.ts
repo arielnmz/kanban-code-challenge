@@ -20,6 +20,7 @@ export function useBoardStateContext(): BoardStateType {
 
   useEffect(() => {
     if (board === null || !synced) {
+      console.log("API call to get the board");
       setBoard({
         cards: [
           { id: "1", column: "column-1", content: "test" },
@@ -35,12 +36,15 @@ export function useBoardStateContext(): BoardStateType {
 
   const createCard = useCallback(async (card: CardT) => {
     console.log("API call to create card", card);
+    setSynced(false);
   }, []);
   const updateCard = useCallback(async (card: CardT) => {
     console.log("API call to update card", card);
+    setSynced(false);
   }, []);
   const deleteCard = useCallback(async (cardId: string) => {
     console.log("API call to delete card", cardId);
+    setSynced(false);
   }, []);
 
   return [board, { createCard, updateCard, deleteCard }];

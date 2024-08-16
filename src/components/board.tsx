@@ -17,7 +17,6 @@ function useReducedBoard(board: BoardT) {
     },
     {},
   );
-
   return Object.values(reducedBoard);
 }
 
@@ -26,6 +25,7 @@ export default function Board() {
   const [board] = boardState;
 
   const columns = useReducedBoard(board);
+  console.log("showing cols", columns);
 
   return (
     <div
