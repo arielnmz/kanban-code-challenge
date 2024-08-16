@@ -4,10 +4,13 @@ import {
   Dispatch,
   MutableRefObject,
   useCallback,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { BoardState } from "../store";
+import { CardT } from "../typedefs";
 
 // Custom hooks
 
@@ -21,7 +24,7 @@ function useDnDSource(
         (e as DragEvent).dataTransfer?.setData("text/plain", cardId);
       }
     },
-    [targetRef],
+    [cardId, targetRef],
   );
 }
 
@@ -43,24 +46,23 @@ function useDnDHandle(targetRef: MutableRefObject<Element | null>) {
 
 function useOptimisticDeleteCard(cardId: string): [boolean, () => void] {
   const [isDeleted, setIsDeleted] = useState(false);
+  const [, { deleteCard }] = useContext(BoardState)!;
   const deleter = useCallback(async () => {
-    console.log("Call to API to remove card", cardId);
+    await deleteCard(cardId);
     setIsDeleted(true);
-  }, [cardId]);
+  }, [deleteCard, cardId]);
   return [isDeleted, deleter];
 }
 
 function useToggleableEditField(
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>,
-  card: {
-    id: string;
-    content: string;
-  },
+  card: CardT,
 ): [string, Dispatch<string>, boolean, () => void, () => void] {
   const [isEditMode, setIsEditMode] = useState(false);
   const [optimisticCardContent, setOptimisticCardContent] = useState(
     card.content,
   );
+  const [, { updateCard }] = useContext(BoardState)!;
 
   useEffect(() => {
     if (isEditMode) {
@@ -68,17 +70,17 @@ function useToggleableEditField(
     } else {
       textareaRef.current?.blur();
     }
-  }, [isEditMode]);
+  }, [isEditMode, textareaRef]);
 
   const editCard = useCallback(() => {
     setIsEditMode(true);
   }, []);
 
-  const saveCard = useCallback(() => {
-    const finalText = textareaRef.current?.value || "";
-    console.log("API call to update card", card, "new text", finalText);
+  const saveCard = useCallback(async () => {
+    card.content = textareaRef.current?.value || "";
+    await updateCard(card);
     setIsEditMode(false);
-  }, [textareaRef]);
+  }, [textareaRef, updateCard, card]);
 
   return [
     optimisticCardContent,
@@ -89,7 +91,7 @@ function useToggleableEditField(
   ];
 }
 
-export default function Card(props: { card: { id: string; content: string } }) {
+export default function Card(props: { card: CardT }) {
   const cardRef = useRef(null);
 
   const sourceDragStart = useDnDSource(props.card.id, cardRef);
