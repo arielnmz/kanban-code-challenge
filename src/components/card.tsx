@@ -15,16 +15,17 @@ import { CardT } from "../typedefs";
 // Custom hooks
 
 function useDnDSource(
-  cardId: string,
+  card: CardT,
   targetRef: MutableRefObject<Element | null>,
 ) {
   return useCallback(
     (e: any) => {
       if (targetRef.current) {
-        (e as DragEvent).dataTransfer?.setData("text/plain", cardId);
+        const payload = JSON.stringify(card);
+        (e as DragEvent).dataTransfer?.setData("text/json", payload);
       }
     },
-    [cardId, targetRef],
+    [card, targetRef],
   );
 }
 
@@ -94,7 +95,7 @@ function useToggleableEditField(
 export default function Card(props: { card: CardT }) {
   const cardRef = useRef(null);
 
-  const sourceDragStart = useDnDSource(props.card.id, cardRef);
+  const sourceDragStart = useDnDSource(props.card, cardRef);
   const [handleDragStart, handleDragEnd] = useDnDHandle(cardRef);
   const [isDeleted, handleDeleteCard] = useOptimisticDeleteCard(props.card.id);
   const textareaRef = useRef(null);

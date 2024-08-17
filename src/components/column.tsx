@@ -11,8 +11,9 @@ function useDnDTarget(columnId: string) {
   const handleDrop = useCallback(
     async (e: any) => {
       e.preventDefault();
-      const payload = e.dataTransfer.getData("text/plain");
-      await updateCard({ id: payload, column: columnId, content: "" });
+      const payload = e.dataTransfer.getData("text/json");
+      const card = JSON.parse(payload);
+      await updateCard({ ...card, column: columnId });
       return false;
     },
     [updateCard, columnId],
