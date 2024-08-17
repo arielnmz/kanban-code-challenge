@@ -149,7 +149,7 @@ export default function Card(props: { card: CardT }) {
         {/*Tools*/}
         <div className={"flex flex-col justify-between shrink"}>
           {/*Drag*/}
-          <div className={""}>
+          <div className={"text-neutral-500"}>
             <button
               onMouseDown={handleDragStart}
               onMouseUp={handleDragEnd}
@@ -160,7 +160,7 @@ export default function Card(props: { card: CardT }) {
           </div>
           {/*Delete*/}
           <div>
-            <button onClick={handleDeleteCard}>
+            <button onClick={handleDeleteCard} className={"text-red-300"}>
               <Icon path={mdiDelete} title="Remove" size={1} />
             </button>
           </div>
