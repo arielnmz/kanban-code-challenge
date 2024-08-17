@@ -125,7 +125,10 @@ export default function Card(props: { card: CardT }) {
             onClick={editCard}
             className={"grow " + (isEditMode ? "hidden" : "")}
           >
-            {optimisticCardContent}
+            <span className={"font-bold text-neutral-500"}>
+              {props.card.id}:
+            </span>{" "}
+            <span>{optimisticCardContent}</span>
           </div>
           {/*Edit area*/}
           <textarea

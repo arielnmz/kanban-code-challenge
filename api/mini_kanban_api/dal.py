@@ -1,18 +1,19 @@
-from uuid import uuid4
+from itertools import count
 
 from mini_kanban_api.db import get_dynamodb_resource
 
-TMP_CARDS = [
-    {"id": "1", "column": "column-1", "content": "test"},
-    {"id": "2", "column": "column-1", "content": "test"},
-    {"id": "3", "column": "column-2", "content": "test"},
-    {"id": "4", "column": "column-2", "content": "test"},
-    {"id": "5", "column": "column-3", "content": "test"},
-]
+DEFAULT_COLUMN_ORDER_MAP = {
+    "TODO": 1,
+    "IN PROGRESS": 2,
+    "BLOCKED": 3,
+    "DONE": 4,
+}
+
+next_card_id = count(start=1000)
 
 
-def gen_card_id():
-    return uuid4().hex
+def gen_card_id() -> str:
+    return str(next(next_card_id))
 
 
 def get_cards():
@@ -20,7 +21,15 @@ def get_cards():
     dynamodb = get_dynamodb_resource()
     table = dynamodb.Table("cards")
     response = table.scan()
-    return [v["card"] for v in response["Items"]]
+    cards = [v["card"] for v in response["Items"]]
+
+    return sorted(
+        cards,
+        key=lambda card: (
+            DEFAULT_COLUMN_ORDER_MAP.get(card["column"], 99),
+            int(card["id"]),
+        ),
+    )
 
 
 def create_card(column: str, content: str):
