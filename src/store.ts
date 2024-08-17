@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useEffect, useState } from "react";
 import { BoardT, CardT } from "./typedefs";
+import { gql, useQuery } from "@apollo/client";
 
 export type BoardStateType = [
   BoardT,
@@ -11,40 +12,42 @@ export type BoardStateType = [
     deleteCard: (cardId: string) => Promise<void>;
   },
 ];
-
+const GET_BOARD = gql`
+  query GetBoard {
+    board {
+      cards {
+        id
+        column
+        content
+      }
+    }
+  }
+`;
 export const BoardState = createContext<BoardStateType | null>(null);
 
 export function useBoardStateContext(): BoardStateType {
   const [board, setBoard] = useState<BoardT>({ cards: [] });
-  const [synced, setSynced] = useState(false);
+
+  const { loading, error, data, refetch } = useQuery(GET_BOARD);
 
   useEffect(() => {
-    if (board === null || !synced) {
-      console.log("API call to get the board");
-      setBoard({
-        cards: [
-          { id: "1", column: "column-1", content: "test" },
-          { id: "2", column: "column-1", content: "test" },
-          { id: "3", column: "column-2", content: "test" },
-          { id: "4", column: "column-2", content: "test" },
-          { id: "5", column: "column-3", content: "test" },
-        ],
-      });
-      setSynced(true);
-    }
-  }, [board, synced]);
+    if (!data) return;
+    console.log("API call to get the board", data);
+
+    setBoard(data["board"]);
+  }, [data]);
 
   const createCard = useCallback(async (card: CardT) => {
     console.log("API call to create card", card);
-    setSynced(false);
+    await refetch();
   }, []);
   const updateCard = useCallback(async (card: CardT) => {
     console.log("API call to update card", card);
-    setSynced(false);
+    await refetch();
   }, []);
   const deleteCard = useCallback(async (cardId: string) => {
     console.log("API call to delete card", cardId);
-    setSynced(false);
+    await refetch();
   }, []);
 
   return [board, { createCard, updateCard, deleteCard }];

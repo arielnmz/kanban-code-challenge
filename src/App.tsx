@@ -1,6 +1,12 @@
 import React from "react";
 import "./App.css";
 import Board from "./components/board";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "http://localhost:8080/api/gql",
+  cache: new InMemoryCache(),
+});
 
 function App() {
   return (
@@ -13,7 +19,9 @@ function App() {
         </nav>
       </header>
       <section className={"h-full"}>
-        <Board />
+        <ApolloProvider client={client}>
+          <Board />
+        </ApolloProvider>
       </section>
     </div>
   );
