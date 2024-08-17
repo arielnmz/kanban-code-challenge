@@ -1,7 +1,5 @@
 from uuid import uuid4
 
-from botocore.exceptions import ClientError
-
 from mini_kanban_api.db import get_dynamodb_resource
 
 TMP_CARDS = [

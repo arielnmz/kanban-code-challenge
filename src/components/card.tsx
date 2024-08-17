@@ -77,8 +77,8 @@ function useToggleableEditField(
   }, []);
 
   const saveCard = useCallback(async () => {
-    card.content = textareaRef.current?.value || "";
-    await updateCard(card);
+    const content = textareaRef.current?.value || "";
+    await updateCard({ ...card, content });
     setIsEditMode(false);
   }, [textareaRef, updateCard, card]);
 
@@ -140,7 +140,7 @@ export default function Card(props: { card: CardT }) {
               "grow rounded bg-neutral-700 drop-shadow " +
               (isEditMode ? "" : "hidden")
             }
-          ></textarea>
+          />
         </div>
         {/*Tools*/}
         <div className={"flex flex-col justify-between shrink"}>

@@ -1,7 +1,8 @@
 import Card from "./card";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import { BoardState } from "../store";
 import { ColumnT } from "../typedefs";
+import CreateCard from "./createCard";
 
 // Custom hooks
 
@@ -27,11 +28,14 @@ function useDnDTarget(columnId: string) {
 
 export default function Column(props: { column: ColumnT }) {
   const [handleDrop, handleDragOver] = useDnDTarget(props.column.id);
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <div
       onDrop={handleDrop}
       onDragOver={handleDragOver}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={
         "flex flex-col justify-start rounded drop-shadow bg-neutral-700"
       }
@@ -43,6 +47,11 @@ export default function Column(props: { column: ColumnT }) {
         {props.column.cards.map((card) => (
           <Card key={card.id} card={card} />
         ))}
+
+        {/*New card*/}
+        <div className={isHovered ? "" : "hidden"}>
+          <CreateCard column={props.column.id} />
+        </div>
       </div>
     </div>
   );

@@ -68,8 +68,7 @@ class DeleteCard(graphene.Mutation):
 
 
 class SeedDB(graphene.Mutation):
-    class Arguments:
-        ...
+    class Arguments: ...
 
     ok = graphene.Boolean()
 
