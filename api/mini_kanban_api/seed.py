@@ -1,3 +1,4 @@
+from uuid import uuid4
 
 from botocore.exceptions import ClientError
 
@@ -23,21 +24,16 @@ def create_table():
         table.wait_until_exists()
 
         TMP_CARDS = [
-            {"id": "1", "column": "column-1", "content": "test"},
-            {"id": "2", "column": "column-1", "content": "test"},
-            {"id": "3", "column": "column-2", "content": "test"},
-            {"id": "4", "column": "column-2", "content": "test"},
-            {"id": "5", "column": "column-3", "content": "test"},
+            {"id":  uuid4().hex, "column": "column-1", "content": "test"},
+            {"id":  uuid4().hex, "column": "column-1", "content": "test"},
+            {"id":  uuid4().hex, "column": "column-2", "content": "test"},
+            {"id":  uuid4().hex, "column": "column-2", "content": "test"},
+            {"id":  uuid4().hex, "column": "column-3", "content": "test"},
         ]
 
         for card in TMP_CARDS:
             try:
-                table.put_item(
-                    Item={
-                        "id": card["id"],
-                        "card": card,
-                    }
-                )
+                table.put_item(Item={"id":card["id"],"card":card})
             except ClientError as err:
                 print(
                     "Couldn't add movie %s to table %s. Here's why: %s: %s",

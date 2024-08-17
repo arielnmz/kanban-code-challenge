@@ -11,14 +11,12 @@ class CardType(graphene.ObjectType):
 
 
 class BoardType(graphene.ObjectType):
-    cards = graphene.List(
-        CardType, columns=graphene.List(graphene.String, required=True)
-    )
+    cards = graphene.List(CardType)
 
     @staticmethod
-    def resolve_cards(*_, columns):
+    def resolve_cards(*_):
         # Resolve only the cards of a column, in batches
-        return get_cards(columns)
+        return get_cards()
 
 
 class Query(graphene.ObjectType):
