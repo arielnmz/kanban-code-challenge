@@ -1,10 +1,18 @@
 ---
 
 services:
-  dynamodb-local:
+  api:
+    build:
+      dockerfile: api/container/Containerfile
+      context: .
+      target: prod
+    ports:
+      - "8080:8000"
+    environment:
+      - DYNAMODB_ENDPOINT=http://db:8000
+  db:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
-    container_name: dynamodb-local
     user: root
     ports:
       - "8000:8000"

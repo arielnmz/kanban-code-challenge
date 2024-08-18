@@ -2,9 +2,9 @@
 
 echo "Resetting DynamoDB instance and re-seeding"
 
-docker compose down -v
+docker compose down -v db
 
-docker compose up -d
+docker compose up -d db
 
 echo "Waiting for DynamoDB to come up..."
 

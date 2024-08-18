@@ -1,0 +1,37 @@
+FROM docker.io/python:3.11-alpine as base
+
+ENV PYTHONUNBUFFERED=1
+
+FROM base as builder
+
+ENV POETRY_VERSION=1.8.3
+ENV POETRY_NO_INTERACTION=true
+ENV POETRY_VIRTUALENVS_CREATE=1
+ENV POETRY_VIRTUALENVS_IN_PROJECT=1
+ENV PATH="/root/.local/bin:$PATH"
+
+RUN python -m pip install -U pip
+RUN python -m pip install pipx
+RUN pipx install poetry
+
+WORKDIR /app/api
+
+COPY api/poetry.lock api/pyproject.toml /app/api/
+
+RUN poetry install --no-root --only main
+
+COPY api/mini_kanban_api mini_kanban_api
+
+RUN poetry install
+
+
+FROM base as prod
+
+WORKDIR /app/api
+
+COPY --from=builder /app/api/.venv .venv
+COPY --from=builder /app/api/mini_kanban_api mini_kanban_api
+
+EXPOSE 8000
+
+CMD sh -c '. .venv/bin/activate && uvicorn mini_kanban_api.main:app --host 0.0.0.0 --port 8000'
