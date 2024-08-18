@@ -1,0 +1,22 @@
+FROM docker.io/node:hydrogen-alpine as base
+
+FROM base as builder
+
+WORKDIR /app/web
+
+COPY web/package.json web/package-lock.json /app/web/
+
+RUN npm install
+
+COPY web /app/web
+
+RUN npm run build
+
+
+FROM docker.io/caddy:2.7.5-alpine as prod
+
+COPY --from=builder /app/web/build /usr/share/caddy
+
+WORKDIR /usr/share/caddy
+
+EXPOSE 3000

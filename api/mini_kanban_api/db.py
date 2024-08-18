@@ -3,7 +3,7 @@ from functools import cache
 
 import boto3
 
-DYNAMODB_ENDPOINT = os.getenv("DYNAMODB_ENDPOINT", "http://localhost:8000")
+DYNAMODB_ENDPOINT = os.getenv("DYNAMODB_ENDPOINT", "http://db:8000")
 
 
 @cache

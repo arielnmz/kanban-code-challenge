@@ -1,0 +1,4 @@
+:3000
+
+file_server
+reverse_proxy /api/* api:8000

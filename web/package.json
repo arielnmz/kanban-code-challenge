@@ -25,9 +25,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "reset-db": "sh ./scripts/reset-db.sh",
-    "build-compose": "docker compose build",
-    "run-compose": "docker compose up"
+    "reset-db": "sh ../scripts/reset-db.sh",
+    "build-compose": "docker compose -f ../compose.yaml build",
+    "run-compose": "docker compose -f ../compose.yaml up"
   },
   "eslintConfig": {
     "extends": [

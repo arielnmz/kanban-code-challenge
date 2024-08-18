@@ -3,8 +3,10 @@ import "./App.css";
 import Board from "./components/board";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
+const apiUrl = process.env.REACT_APP_API_URL || "/api/gql";
+
 const client = new ApolloClient({
-  uri: "http://localhost:8080/api/gql",
+  uri: apiUrl,
   cache: new InMemoryCache(),
 });
 

@@ -1,1 +1,4 @@
 api/.venv/
+web/build/
+web/node_modules/
+web/container/

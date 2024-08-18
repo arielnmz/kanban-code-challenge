@@ -8,8 +8,15 @@ services:
       target: prod
     ports:
       - "8080:8000"
-    environment:
-      - DYNAMODB_ENDPOINT=http://db:8000
+  web:
+    build:
+      dockerfile: web/container/Containerfile
+      context: .
+      target: prod
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web/deploy/Caddyfile:/etc/caddy/Caddyfile:Z
   db:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
